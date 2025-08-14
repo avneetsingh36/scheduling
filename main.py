@@ -1,26 +1,38 @@
 import algos
 import time
+import asyncio
 
 def compute_time(fn, algo_type):
     print(f'Running {algo_type}...')
     start = time.perf_counter_ns()
-    result = fn()
+    if algo_type == "ASYNC IO":
+        asyncio.run(fn())
+    else:
+        result = fn()
     end = time.perf_counter_ns()
     return end - start
 
 def display_data(duration, name) -> None:
     print(f'{name} took {duration} ns')
     print(f'{name} took {duration // 1000000} ms')
+    print()
 
 def fifo(jobs: list) -> None:
     duration_ns = compute_time(lambda: algos.first_in_first_out(jobs, 0), "FIFO IO")
     display_data(duration_ns, "FIFO IO")
+
     duration_ns = compute_time(lambda: algos.first_in_first_out(jobs, 1), "FIFO CPU")
     display_data(duration_ns, "FIFO CPU")
+    
+    duration_ns = compute_time(lambda: algos.async_IO_tasks(jobs, 2), "ASYNC IO")
+    display_data(duration_ns, "ASYNC IO")
 
+    duration_ns = compute_time(lambda: algos.multiprocessing_CPU_tasks(jobs, 3), "MP CPU")
+    display_data(duration_ns, "MP CPU")
 
 def main():
-    jobs = [1, 1, 1, 1]
+    jobs = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    print(f"We are running {len(jobs)} jobs take each take approx 1 second to compute.")
     fifo(jobs)
 
 if __name__ == "__main__":
