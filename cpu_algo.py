@@ -3,10 +3,11 @@ import threading
 def cpu_task(cycles):
     count = 0
     x = 0.00001
+    acc = 10
     while count < cycles:
-        x = (x * x) + (3.14159 / 2) % 10000
-        count += 1 
-
+        x = (x * 1.000001 + 3.14159) % 997.0
+        acc += int(x * x) & 0xFFFF
+        count += 1
 def mt_cpu_task(cycles):
     batch = cycles // 10000
     threads = []
